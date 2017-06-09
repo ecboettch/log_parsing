@@ -31,7 +31,7 @@ miscellaneous_headings = ['limit', 'page', 'sort']
 source_headings = ['author', 'journal', 'lcc', 'series', 'title', 'topic']
 
 # collect these types parameters. 
-type_headings = ['AllFields', 'Author', 'Donor', 'JournalTitle', 'Notes', 'Performer', 'Publication Place', 'Publisher', 'Series', 'StandardNumbers', 'Subject', 'Title ', 'Title Uniform', 'Subject', 'toc', 'year', 'AuthorBrowse', 'LccBrowse', 'SeriesBrowse', 'TitleBrowse', 'TopicBrowse', 'ids', 'oclc_num']
+type_headings = ['AllFields', 'Author', 'Donor', 'JournalTitle', 'Notes', 'Performer', 'Publication Place', 'Publisher', 'Series', 'StandardNumbers', 'Subject', 'Title', 'Title Uniform', 'Tltle', 'toc', 'year', 'AuthorBrowse', 'LccBrowse', 'SeriesBrowse', 'TitleBrowse', 'TopicBrowse', 'ids', 'oclc_num']
 
 # output these headings. 
 headers = ['search type'] +  type_headings + source_headings + miscellaneous_headings + filter_headings + ['query string']
@@ -137,7 +137,13 @@ def vufind_request_path_to_fields(request_path):
             if lookfor_n in parameters and type_n in parameters:
                 search_type = 'advanced keyword'
                 for l, t in zip(parameters[lookfor_n], parameters[type_n]):
-                    types[t] = l
+                    try:
+                        if types[t]:
+                            types[t] = types[t] + " (newfield) " + l
+                        else:
+                            types[t] = l
+                    except KeyError:
+                        types[t] = l
 
     # browses
     sources = dict.fromkeys(source_headings, '')
